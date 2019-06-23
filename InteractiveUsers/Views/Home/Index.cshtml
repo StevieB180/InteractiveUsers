@@ -186,312 +186,312 @@
             }
         </div>
 
+        @section scripts {
+            <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+            <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+            <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+            <script src="~/Scripts/jquery.signalR-2.4.1.js"></script>
+            <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+            <script src="~/signalr/hubs"></script>
 
-        <script src="~/Scripts/jquery-3.3.1.min.js"></script>
-        <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
-        <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
-        <script src="~/Scripts/jquery.signalR-2.4.0.js"></script>
-        <script src="~/Scripts/jquery.signalR-2.4.0.min.js"></script>
-        <script src="~/signalr/hubs"></script>
+            <script>
+                //$(function () {
+                //    var moveShapeHub = $.connection.moveShapeHub,
+                //        // Send a maximum of 10 messages per second
+                //        // (mouse movements trigger a lot of messages)
+                //        messageFrequency = 10,
+                //        // Determine how often to send messages in
+                //        // time to abide by the messageFrequency
+                //        updateRate = 1000 / messageFrequency,
+                //        shapeModel = {
+                //            id: '',
+                //            left: 0,
+                //            top: 0
+                //        },
+                //        moved = false;
+                //    moveShapeHub.client.updateShape = function (model) {
+                //        $("#" + model.Id).css({ left: model.Left, top: model.Top });
+                //    };
+                //    $.connection.hub.start().done(function () {
+                //        $(".card").draggable({
+                //            drag: function () {
+                //                shapeModel = $(this).offset();
+                //                shapeModel.id = this.id;
+                //                moved = true;
+                //            },
+                //            stop: function () {
+                //                shapeModel = $(this).offset();
+                //                shapeModel.id = this.id;
+                //                moveShapeHub.server.updateModel(shapeModel);
+                //            }
+                //        });
+                //        // Start the client side server update interval
+                //        setInterval(updateServerModel, updateRate);
 
-        <script>
-            //$(function () {
-            //    var moveShapeHub = $.connection.moveShapeHub,
-            //        // Send a maximum of 10 messages per second
-            //        // (mouse movements trigger a lot of messages)
-            //        messageFrequency = 10,
-            //        // Determine how often to send messages in
-            //        // time to abide by the messageFrequency
-            //        updateRate = 1000 / messageFrequency,
-            //        shapeModel = {
-            //            id: '',
-            //            left: 0,
-            //            top: 0
-            //        },
-            //        moved = false;
-            //    moveShapeHub.client.updateShape = function (model) {
-            //        $("#" + model.Id).css({ left: model.Left, top: model.Top });
-            //    };
-            //    $.connection.hub.start().done(function () {
-            //        $(".card").draggable({
-            //            drag: function () {
-            //                shapeModel = $(this).offset();
-            //                shapeModel.id = this.id;
-            //                moved = true;
-            //            },
-            //            stop: function () {
-            //                shapeModel = $(this).offset();
-            //                shapeModel.id = this.id;
-            //                moveShapeHub.server.updateModel(shapeModel);
-            //            }
-            //        });
-            //        // Start the client side server update interval
-            //        setInterval(updateServerModel, updateRate);
+                //        moveShapeHub.server.firstHandShake();
+                //    });
+                //    function updateServerModel() {
+                //        // Only update server if we have a new movement
+                //        if (moved) {
+                //            moveShapeHub.server.updateModel(shapeModel);
+                //            moved = false;
+                //        }
+                //    }
+                //});
+                let moveShapeHub;
+                let cardCounter = 1;
 
-            //        moveShapeHub.server.firstHandShake();
-            //    });
-            //    function updateServerModel() {
-            //        // Only update server if we have a new movement
-            //        if (moved) {
-            //            moveShapeHub.server.updateModel(shapeModel);
-            //            moved = false;
-            //        }
-            //    }
-            //});
-            let moveShapeHub;
-            let cardCounter = 1;
+                // Send a maximum of 10 messages per second
+                // (mouse movements trigger a lot of messages)
+                let messageFrequency = 10;
 
-            // Send a maximum of 10 messages per second
-            // (mouse movements trigger a lot of messages)
-            let messageFrequency = 10;
+                // Determine how often to send messages in
+                // time to abide by the messageFrequency
+                let updateRate = 1000 / messageFrequency
+                let shapeModel = {
+                    Id: '',
+                    Left: 0,
+                    Top: 0,
+                    Title: '',
+                    Text: ''
+                };
+                let moved = false;
 
-            // Determine how often to send messages in
-            // time to abide by the messageFrequency
-            let updateRate = 1000 / messageFrequency
-            let shapeModel = {
-                Id: '',
-                Left: 0,
-                Top: 0,
-                Title: '',
-                Text: ''
-            };
-            let moved = false;
-
-            function uuidv4() {
-                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                    return v.toString(16);
-                });
-            }
-
-            function updateServerModel() {
-                // Only update server if we have a new movement
-                if (moved) {
-                    moveShapeHub.server.updateModel(shapeModel);
-                    moved = false;
+                function uuidv4() {
+                    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                        return v.toString(16);
+                    });
                 }
-            }
 
-            function makeElementDraggable($element) {
-                $element.draggable({
-                    drag: function () {
-                        shapeModel = $(this).offset();
-                        shapeModel.Id = this.id;
-                        moved = true;
-                    },
-                    stop: function () {
-                        shapeModel = $(this).offset();
-                        shapeModel.Id = this.id;
+                function updateServerModel() {
+                    // Only update server if we have a new movement
+                    if (moved) {
                         moveShapeHub.server.updateModel(shapeModel);
+                        moved = false;
                     }
-                });
-            }
+                }
+
+                function makeElementDraggable($element) {
+                    $element.draggable({
+                        drag: function () {
+                            shapeModel = $(this).offset();
+                            shapeModel.Id = this.id;
+                            moved = true;
+                        },
+                        stop: function () {
+                            shapeModel = $(this).offset();
+                            shapeModel.Id = this.id;
+                            moveShapeHub.server.updateModel(shapeModel);
+                        }
+                    });
+                }
 
 
 
-            function addNewCardToDom(shapeModel) {
+                function addNewCardToDom(shapeModel) {
 
-                let cardHtmlStr = ` <li class="card" id=${shapeModel.Id}>
+                    let cardHtmlStr = ` <li class="card" id=${shapeModel.Id}>
 
-                                                                    <div class="row1">
+                                                                                <div class="row1">
 
-                                                                        <div class="col-xs-2 col-sm-1 col-md-1" id="col1">
-                                                                            <a href="javascript:;" class="btn btn-default btn-sm edit" id="pencil">
-                                                                                <span class="glyphicon glyphicon-pencil"></span>
-                                                                            </a>
-                                                                        </div>
+                                                                                    <div class="col-xs-2 col-sm-1 col-md-1" id="col1">
+                                                                                        <a href="javascript:;" class="btn btn-default btn-sm edit" id="pencil">
+                                                                                            <span class="glyphicon glyphicon-pencil"></span>
+                                                                                        </a>
+                                                                                    </div>
 
-                                                                        <div class="col-xs-1 col-sm-1 col-md-1" id="col2">
-                                                                            <a href="javascript:;" class="btn btn-default btn-sm delete" id="trash">
-                                                                                <span class="glyphicon glyphicon-trash"></span>
-                                                                            </a>
-                                                                        </div>
-                                                                    </div>
-                                                                      <h3 id="boardid" style="display:none">${shapeModel.BoardID}</h3>
-                                                                    <h3 id="cardid" style="display:none">${shapeModel.Id}</h3>
-                                                                    <h4 id="title"> ${shapeModel.Title}</h4>
-                                                                    <input type="text" id="titleInput" style="display:none" value="${shapeModel.Title}" />
-                                                                    <p id="text">${shapeModel.Text}</p>
-                                                                    <input id="textInput" type="text" style="display:none" value="${shapeModel.Text}" />
-
-
-
-
-                                                                    </div>
-
-                                                                    <a class="Update" href="javascript:;" style="display:none">Update</a>
-                                                                    <a class="Cancel" href="javascript:;" style="display:none">Cancel</a>
-                                                                  </li>`
-                $("#cardsContainer").append(cardHtmlStr);
-            }
-
-            function addNewCardToDB(shapeModel) {
-                $.ajax({
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    url: "/Home/AddCardSignal",
-                    type: 'POST',
-                    data: JSON.stringify({ 'card': shapeModel }),
-                    success: function (data) {
-
-                        shapeModel.Id = data;
-                        addNewCardToDom(shapeModel);
-
-                        makeCardMove($("#" + shapeModel.Id));
-
-                        moveShapeHub.server.addNewShape(shapeModel);
-                    }
-                });
-            }
-
-            function addNewCard() {
-
-                let title = $("#Title").val();
-                let text = $("#Text").val();
-                let id = uuidv4();
-
-                let newShape = { Id: id, Left: 200, Top: 25, Title: title, Text: text };
-
-                addNewCardToDom(newShape);
-                makeElementDraggable($("#" + id));
-                adjustShapePosition(newShape);
-
-
-                moveShapeHub.server.addNewShape(newShape);
-            }
-
-            function adjustShapePosition(shapeModel) {
-                $("#" + shapeModel.Id).css({ left: shapeModel.Left, top: shapeModel.Top });
-            }
+                                                                                    <div class="col-xs-1 col-sm-1 col-md-1" id="col2">
+                                                                                        <a href="javascript:;" class="btn btn-default btn-sm delete" id="trash">
+                                                                                            <span class="glyphicon glyphicon-trash"></span>
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                                  <h3 id="boardid" style="display:none">${shapeModel.BoardID}</h3>
+                                                                                <h3 id="cardid" style="display:none">${shapeModel.Id}</h3>
+                                                                                <h4 id="title"> ${shapeModel.Title}</h4>
+                                                                                <input type="text" id="titleInput" style="display:none" value="${shapeModel.Title}" />
+                                                                                <p id="text">${shapeModel.Text}</p>
+                                                                                <input id="textInput" type="text" style="display:none" value="${shapeModel.Text}" />
 
 
 
-            $(document).ready(function () {
 
-                moveShapeHub = $.connection.moveShapeHub;
+                                                                                </div>
 
-                moveShapeHub.client.updateShape = function (shapeModel) {
-                    adjustShapePosition(shapeModel);
+                                                                                <a class="Update" href="javascript:;" style="display:none">Update</a>
+                                                                                <a class="Cancel" href="javascript:;" style="display:none">Cancel</a>
+                                                                              </li>`
+                    $("#cardsContainer").append(cardHtmlStr);
+                }
 
-                };
-
-                moveShapeHub.client.newShapeAdded = function (shapeModel) {
-
-                    addNewCardToDom(shapeModel);
-                    makeElementDraggable($("#" + shapeModel.Id));
-
-                    adjustShapePosition(shapeModel);
-
-                };
-
-                $.connection.hub.start().done(function () {
-
-                    setInterval(updateServerModel, updateRate);
-                    moveShapeHub.server.firstHandShake();
-                });
-            });
-
-
-        </script>
-
-        <script src="~/Scripts/bootstrap.js"></script>
-        <script src="~/Scripts/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script>
-            $("body").on("click", ".edit", function () {
-                var card = $(this).closest(".card");
-                $(card).each(function () {
-                    if ($(this).find("#titleInput").length > 0) {
-                        console.log("edit button clicked");
-                        // console.log(card);
-                        $(this).find("input").show();
-                        $(this).find(".text").hide();
-                        $(this).find(".title").hide();
-                    }//end of if statement
-                });
-                card.find(".Update").show();
-                card.find(".Cancel").show();
-            });
-            $("body").on("click", ".vote", function () {
-                var card = $(this).closest(".card");
-                $(card).each(function () {
-                    var BID = $(this).find("#boardid").html();
-                    var ID = $(this).find("#cardid").html();
-                    console.log("this is the board id: " + BID);
-                    console.log("this is the card id: " + ID);
-                    var voteCard = {};
-                    voteCard.BoardID = card.find("#boardid").html();
-                    voteCard.CardId = card.find("#cardid").html();
-                    console.log("this is the board id: " + voteCard.BoardID);
-                    console.log("this is the card id: " + voteCard.CardId);
+                function addNewCardToDB(shapeModel) {
                     $.ajax({
-                        url: "/Home/Vote",
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        url: "/Home/AddCardSignal",
                         type: 'POST',
-                        data: JSON.stringify(voteCard),
+                        data: JSON.stringify({ 'card': shapeModel }),
+                        success: function (data) {
+
+                            shapeModel.Id = data;
+                            addNewCardToDom(shapeModel);
+
+                            makeCardMove($("#" + shapeModel.Id));
+
+                            moveShapeHub.server.addNewShape(shapeModel);
+                        }
+                    });
+                }
+
+                function addNewCard() {
+
+                    let title = $("#Title").val();
+                    let text = $("#Text").val();
+                    let id = uuidv4();
+
+                    let newShape = { Id: id, Left: 200, Top: 25, Title: title, Text: text };
+
+                    addNewCardToDom(newShape);
+                    makeElementDraggable($("#" + id));
+                    adjustShapePosition(newShape);
+
+
+                    moveShapeHub.server.addNewShape(newShape);
+                }
+
+                function adjustShapePosition(shapeModel) {
+                    $("#" + shapeModel.Id).css({ left: shapeModel.Left, top: shapeModel.Top });
+                }
+
+
+
+                $(document).ready(function () {
+
+                    moveShapeHub = $.connection.moveShapeHub;
+
+                    moveShapeHub.client.updateShape = function (shapeModel) {
+                        adjustShapePosition(shapeModel);
+
+                    };
+
+                    moveShapeHub.client.newShapeAdded = function (shapeModel) {
+
+                        addNewCardToDom(shapeModel);
+                        makeElementDraggable($("#" + shapeModel.Id));
+
+                        adjustShapePosition(shapeModel);
+
+                    };
+
+                    $.connection.hub.start().done(function () {
+
+                        setInterval(updateServerModel, updateRate);
+                        moveShapeHub.server.firstHandShake();
+                    });
+                });
+
+
+            </script>
+
+            <script src="~/Scripts/bootstrap.js"></script>
+            <script src="~/Scripts/bootstrap.min.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <script>
+                $("body").on("click", ".edit", function () {
+                    var card = $(this).closest(".card");
+                    $(card).each(function () {
+                        if ($(this).find("#titleInput").length > 0) {
+                            console.log("edit button clicked");
+                            // console.log(card);
+                            $(this).find("input").show();
+                            $(this).find(".text").hide();
+                            $(this).find(".title").hide();
+                        }//end of if statement
+                    });
+                    card.find(".Update").show();
+                    card.find(".Cancel").show();
+                });
+                $("body").on("click", ".vote", function () {
+                    var card = $(this).closest(".card");
+                    $(card).each(function () {
+                        var BID = $(this).find("#boardid").html();
+                        var ID = $(this).find("#cardid").html();
+                        console.log("this is the board id: " + BID);
+                        console.log("this is the card id: " + ID);
+                        var voteCard = {};
+                        voteCard.BoardID = card.find("#boardid").html();
+                        voteCard.CardId = card.find("#cardid").html();
+                        console.log("this is the board id: " + voteCard.BoardID);
+                        console.log("this is the card id: " + voteCard.CardId);
+                        $.ajax({
+                            url: "/Home/Vote",
+                            type: 'POST',
+                            data: JSON.stringify(voteCard),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json"
+                        });
+                        location.reload();
+                    });
+                });
+
+                $("body").on("click", ".Update", function () {
+                    var card = $(this).closest(".card");
+
+                    $(card).each(function () {
+                        //if (x == card.find("#cardid").html()) {
+                        var titleInput = $(this).find("#titleInput");
+                        var textInput = $(this).find("#textInput");
+                        var text = $(this).find(".text");
+                        var title = $(this).find(".title");
+                        card.find('#text').html(textInput.val());
+                        card.find('#title').html(titleInput.val());
+                        text.show();
+                        title.show();
+                        titleInput.hide();
+                        textInput.hide();
+                        //  }//end of if
+                    });
+
+                    card.find(".edit").show();
+                    card.find(".Cancel").hide();
+
+
+                    $(this).hide();
+                    var updatedCard = {};
+                    updatedCard.CardId = card.find("#cardid").html();
+                    updatedCard.Title = card.find("#title").html();
+                    updatedCard.Text = card.find("#text").html();
+                    console.log("ID: " + updatedCard.CardId + "Title: "
+                        + updatedCard.Title + "Text: " + updatedCard.Text);
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/UpdateCard",
+                        data: JSON.stringify(updatedCard),
                         contentType: "application/json; charset=utf-8",
                         dataType: "json"
+
                     });
-                    location.reload();
-                });
-            });
-
-            $("body").on("click", ".Update", function () {
-                var card = $(this).closest(".card");
-
-                $(card).each(function () {
-                    //if (x == card.find("#cardid").html()) {
-                    var titleInput = $(this).find("#titleInput");
-                    var textInput = $(this).find("#textInput");
-                    var text = $(this).find(".text");
-                    var title = $(this).find(".title");
-                    card.find('#text').html(textInput.val());
-                    card.find('#title').html(titleInput.val());
-                    text.show();
-                    title.show();
-                    titleInput.hide();
-                    textInput.hide();
-                    //  }//end of if
                 });
 
-                card.find(".edit").show();
-                card.find(".Cancel").hide();
 
-
-                $(this).hide();
-                var updatedCard = {};
-                updatedCard.CardId = card.find("#cardid").html();
-                updatedCard.Title = card.find("#title").html();
-                updatedCard.Text = card.find("#text").html();
-                console.log("ID: " + updatedCard.CardId + "Title: "
-                    + updatedCard.Title + "Text: " + updatedCard.Text);
-
-                $.ajax({
-                    type: "POST",
-                    url: "/Home/UpdateCard",
-                    data: JSON.stringify(updatedCard),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json"
-
+                $("body").on("click", ".Cancel", function () {
+                    var card = $(this).closest(".card");
+                    $(card).each(function () {
+                        $(this).find("input").hide();
+                        $(this).find(".text").show();
+                        $(this).find(".title").show();
+                    });
+                    card.find(".Update").hide();
+                    card.find(".Cancel").hide();
                 });
-            });
-
-
-            $("body").on("click", ".Cancel", function () {
-                var card = $(this).closest(".card");
-                $(card).each(function () {
-                    $(this).find("input").hide();
-                    $(this).find(".text").show();
-                    $(this).find(".title").show();
-                });
-                card.find(".Update").hide();
-                card.find(".Cancel").hide();
-            });
 
 
 
-        </script>
+            </script>
 
-
-    </body>
+            }
+        </body>
